@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Map Api</title>
+    <style>
+          #maparea{
+            height:700px;
+          }
+    </style>
+  </head>
+  <body>
+
+    <div id="maparea"></div>
+    <script>
+        var map;
+        // draw the map using google map api
+        function drawmap(){
+            map=new google.maps.Map(document.getElementById('maparea'),{
+                center:{lat:23.42, lng:90.50},  // set the center lang and lat
+                zoom: 10,
+                mapTypeId: 'hybrid'
+            });
+            var locarr=[
+              {lat:23.44, lng:90.50},
+              {lat:23.38, lng:90.50},
+              {lat:23.44, lng:90.52},
+              {lat:23.44, lng:90.46}
+            ];
+
+            for(var i=0;i<locarr.length;i++){
+              var location=locarr[i];
+              var mk = new google.maps.Marker({
+                position: location,
+                map: map
+              });
+            }
+            map.addListener("click",drawmarker);
+            // own position
+            if(navigator.geolocation){
+                //get cuttent position for static position
+                // watch position for dynamic position
+                navigator.geolocation.getCurrentPosition(sucessfn); // pass two function if success (sucess) if not(error)
+            }
+            else{
+              window.alert("please share your location ");
+            }
+        }
+        // sucess function define here
+        function sucessfn(position){
+              var lt= position.coords.latitude;
+              var lg= position.coords.longitude;
+                // draw a marker in this position if you want
+                //info window  (show the info window (y can write the html code))
+                var infowindow= new google.maps.InfoWindow({
+                  content:"<a href='www.google.com'>google</a>"  // string type
+                });
+                //infowindow.open(map, new google.maps.LatLng(lt,ln));  // show the position
+                var m= new google.maps.Marker({
+                  position:{lat:lt,lng:lt},
+                  map:map
+                });
+                infowindow.open(map,m);
+        }
+
+        //marker set in the position
+        function drawmarker(event){
+            var pos=event.latLng;
+            var newmk= new google.maps.Marker({
+              position:pos,
+              map:map,
+              draggable:true
+            });
+            newmk.addListener("dragend",dragevent);
+          //  window.alert(pos.lat()+""+pos.lng());
+        }
+        function dragevent(event){
+            window.alert(event.latLng.lat()+""+event.latLng.lng());
+        }
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=( paste your key here )&callback=drawmap"></script>
+
+    <script>
+  
+    </script>
+  </body>
+</html>
